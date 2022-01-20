@@ -1,0 +1,67 @@
+{
+    "name": "MoveInput",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "4b990b58-7d5f-4e95-b8bf-5c14d6b0c18c",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "5cf6a0ae-40df-4339-b99c-e7cac3f102fe",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "97c2ee40-c86b-41d8-b8d4-97cd3a43d7c0",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "6376ce4e-a6e8-4bbd-8acd-64e50832b141",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "New control scheme",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "5e79c486-a2e8-462b-ae57-5b2b5ba6acf9",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "New control scheme",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "New control scheme",
+            "bindingGroup": "New control scheme",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
