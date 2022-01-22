@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class PlayerManager : MonoBehaviour
     private MoveInput inputActions;
     private ChechingGround chectingGround;
     private ChechingPosition chechingPosition;
+    private Score score;
+    //private Finish finish;
 
     public bool isGroundedLeft;
     public bool isGroundedRight;
@@ -44,17 +47,19 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-        playerMove.Move(playerRb, speed);
-
-        if (isGroundedLeft)
+        if (!gameState.ChechingFinish())
         {
-            playerMove.LeftSliding(playerRb, inputActions, slidingSmoothness);
-        }
+            playerMove.Move(playerRb, speed);
 
-        if (isGroundedRight)
-        {
-            playerMove.RightSliding(playerRb, inputActions, slidingSmoothness);
+            if (isGroundedLeft)
+            {
+                playerMove.LeftSliding(playerRb, inputActions, slidingSmoothness);
+            }
+
+            if (isGroundedRight)
+            {
+                playerMove.RightSliding(playerRb, inputActions, slidingSmoothness);
+            }
         }
     }
 
@@ -62,6 +67,8 @@ public class PlayerManager : MonoBehaviour
     {
         gameOver = gameState.GetComponent<IGameOver>();
         playerRb = GetComponent<Rigidbody>();
+        score = FindObjectOfType<Score>();
+        //finish = FindObjectOfType<Finish>();
         playerMove = new PlayerMove();
         chectingGround = new ChechingGround();
         chechingPosition = new ChechingPosition();
@@ -70,11 +77,21 @@ public class PlayerManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //GameObject obstacle = other.gameObject;
-
         if (other.gameObject.CompareTag("obstacle"))
         {
             gameOver.GameOver();
+        }
+
+        if(other.gameObject.TryGetComponent(out Coin coin))
+        {
+            score.IncreaseScore(coin.CoinCount());
+            Destroy(other.gameObject);
+        }
+
+        if(other.gameObject.TryGetComponent(out Finish finish))
+        {
+            //finish.StopPlayer(playerRb);
+            gameState.Finished();
         }
     }
 }
