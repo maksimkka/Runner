@@ -15,23 +15,23 @@ public class @MoveInput : IInputActionCollection, IDisposable
     ""name"": ""MoveInput"",
     ""maps"": [
         {
-            ""name"": ""Player"",
+            ""name"": ""GroundMovement"",
             ""id"": ""4b990b58-7d5f-4e95-b8bf-5c14d6b0c18c"",
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""5cf6a0ae-40df-4339-b99c-e7cac3f102fe"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""1D Axis"",
-                    ""id"": ""97c2ee40-c86b-41d8-b8d4-97cd3a43d7c0"",
-                    ""path"": ""1DAxis"",
+                    ""name"": ""AD"",
+                    ""id"": ""8851bac5-801f-48f8-92a4-65fb319b15a2"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -40,23 +40,45 @@ public class @MoveInput : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
-                    ""id"": ""6376ce4e-a6e8-4bbd-8acd-64e50832b141"",
-                    ""path"": ""<Keyboard>/a"",
+                    ""name"": ""up"",
+                    ""id"": ""cea6ec60-66c2-466f-8cc5-a1e906fb567e"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""New control scheme"",
+                    ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
-                    ""id"": ""5e79c486-a2e8-462b-ae57-5b2b5ba6acf9"",
+                    ""name"": ""down"",
+                    ""id"": ""0ad65070-a206-4de1-a646-864d6e1298b7"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""ea139ef0-4966-4eb7-a3bd-36c66a702484"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""b553fca8-e9e8-44d9-926d-3253e866c485"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""New control scheme"",
+                    ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -78,9 +100,9 @@ public class @MoveInput : IInputActionCollection, IDisposable
         }
     ]
 }");
-        // Player
-        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        // GroundMovement
+        m_GroundMovement = asset.FindActionMap("GroundMovement", throwIfNotFound: true);
+        m_GroundMovement_Move = m_GroundMovement.FindAction("Move", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -127,29 +149,29 @@ public class @MoveInput : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // Player
-    private readonly InputActionMap m_Player;
-    private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_Move;
-    public struct PlayerActions
+    // GroundMovement
+    private readonly InputActionMap m_GroundMovement;
+    private IGroundMovementActions m_GroundMovementActionsCallbackInterface;
+    private readonly InputAction m_GroundMovement_Move;
+    public struct GroundMovementActions
     {
         private @MoveInput m_Wrapper;
-        public PlayerActions(@MoveInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public GroundMovementActions(@MoveInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_GroundMovement_Move;
+        public InputActionMap Get() { return m_Wrapper.m_GroundMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerActions instance)
+        public static implicit operator InputActionMap(GroundMovementActions set) { return set.Get(); }
+        public void SetCallbacks(IGroundMovementActions instance)
         {
-            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
+            if (m_Wrapper.m_GroundMovementActionsCallbackInterface != null)
             {
-                @Move.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                @Move.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                @Move.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Move.started -= m_Wrapper.m_GroundMovementActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_GroundMovementActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_GroundMovementActionsCallbackInterface.OnMove;
             }
-            m_Wrapper.m_PlayerActionsCallbackInterface = instance;
+            m_Wrapper.m_GroundMovementActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Move.started += instance.OnMove;
@@ -158,7 +180,7 @@ public class @MoveInput : IInputActionCollection, IDisposable
             }
         }
     }
-    public PlayerActions @Player => new PlayerActions(this);
+    public GroundMovementActions @GroundMovement => new GroundMovementActions(this);
     private int m_NewcontrolschemeSchemeIndex = -1;
     public InputControlScheme NewcontrolschemeScheme
     {
@@ -168,7 +190,7 @@ public class @MoveInput : IInputActionCollection, IDisposable
             return asset.controlSchemes[m_NewcontrolschemeSchemeIndex];
         }
     }
-    public interface IPlayerActions
+    public interface IGroundMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
     }

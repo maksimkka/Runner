@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameState : MonoBehaviour, IGameOver
@@ -10,8 +9,6 @@ public class GameState : MonoBehaviour, IGameOver
     [SerializeField] private GameObject gameOverCanvas;
     [SerializeField] private GameObject winGameCanvas;
 
-    public static bool isStarted;
-    private int sceneIndex;
     private bool isFinished;
 
     private void Awake()
@@ -21,29 +18,19 @@ public class GameState : MonoBehaviour, IGameOver
 
     public void GameOver()
     {
-        //isStarted = false;
-        isFinished = false;
         ShowScreen(gameOverCanvas);
         HideScreen(gameCanvas);
         HideScreen(winGameCanvas);
-        Time.timeScale = 0;
-    }
-
-    public void RestartGame()
-    {
         isFinished = false;
-        //isStarted = true;
-        SceneManager.LoadScene(0);
-        Time.timeScale = 1;
+        Time.timeScale = 0;
     }
 
     public void Launch()
     {
-        isFinished = false;
-        //isStarted = true;
         ShowScreen(gameCanvas);
         HideScreen(gameOverCanvas);
         HideScreen(winGameCanvas);
+        isFinished = false;
         Time.timeScale = 1;
     }
 
@@ -59,13 +46,6 @@ public class GameState : MonoBehaviour, IGameOver
         HideScreen(gameCanvas);
         isFinished = true;
         Time.timeScale = 0;
-    }
-
-    public void NextLevel()
-    {
-        sceneIndex++;
-        Debug.Log("Next Level");
-        SceneManager.LoadScene(sceneIndex);
     }
 
     public void ShowScreen(GameObject gameObject)

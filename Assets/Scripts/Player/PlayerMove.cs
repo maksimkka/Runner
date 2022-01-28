@@ -2,28 +2,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMove
+public class PlayerMove : MonoBehaviour
 {
-    public void Move(Rigidbody playerRb, float speed)
+    [SerializeField] private float speed;
+    [SerializeField] private float slidingSmoothness;
+    [SerializeField] private float gravity;
+    [SerializeField] private GameObject leftRay;
+    [SerializeField] private GameObject rightRay;
+
+    private bool isGroundedLeft;
+    private bool isGroundedRight;
+    private ChechingGround chectingGround;
+    private CharacterController characterController;
+
+    Vector2 sideInputs;
+    Vector3 moveForvard;
+    Vector3 sideMovement;
+
+    private void Awake()
     {
-        playerRb.velocity = new Vector3(playerRb.velocity.x, playerRb.velocity.y, speed);
+        characterController = GetComponent<CharacterController>();
+        chectingGround = new ChechingGround();
     }
 
-    public void LeftSliding(Rigidbody playerRb, MoveInput inputActions, float slidingSmoothness)
+    private void Update()
     {
-        float slideVector = inputActions.Player.Move.ReadValue<float>();
-        if (slideVector < 0)
-        {
-            playerRb.velocity = new Vector3(slidingSmoothness * slideVector, playerRb.velocity.y, playerRb.velocity.z);
-        }
+        isGroundedLeft = chectingGround.CheckGround(leftRay.transform.position, leftRay.transform.rotation);
+        isGroundedRight = chectingGround.CheckGround(rightRay.transform.position, rightRay.transform.rotation);
+        
     }
 
-    public void RightSliding(Rigidbody playerRb, MoveInput inputActions, float slidingSmoothness)
+    private void FixedUpdate()
     {
-        float slideVector = inputActions.Player.Move.ReadValue<float>();
-        if (slideVector > 0)
+        MoveDir();
+    }
+
+    public void ReceiveInput(Vector2 sideInput)
+    {
+        sideInputs = sideInput;
+    }
+
+    private void MoveForvard()
+    {
+        moveForvard = gameObject.transform.forward * speed;
+    }
+
+    private void LeftSliding()
+    {
+        if (sideInputs.x < 0 && isGroundedLeft)
         {
-            playerRb.velocity = new Vector3(slidingSmoothness * slideVector, playerRb.velocity.y, playerRb.velocity.z);
+            sideMovement = gameObject.transform.right * sideInputs.x * slidingSmoothness;
         }
+
+        else if (sideInputs.x > 0 && isGroundedRight)
+        {
+            sideMovement = gameObject.transform.right * sideInputs.x * slidingSmoothness;
+        }
+
+        else
+        {
+            sideMovement = new Vector3(0, 0, 0);
+        }    
+    }
+
+    public void MoveDir()
+    {
+        MoveForvard();
+        LeftSliding();
+        characterController.Move(moveForvard * Time.deltaTime);
+        characterController.Move(sideMovement * Time.deltaTime);
     }
 }
