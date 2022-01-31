@@ -5,36 +5,42 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] private float slidingSmoothness;
+    [SerializeField] private float slidingSpeed;
     [SerializeField] private float gravity;
+
     [SerializeField] private GameObject leftRay;
     [SerializeField] private GameObject rightRay;
+    [SerializeField] private LayerMask groundMask;
 
+    private bool isGrounded;
     private bool isGroundedLeft;
     private bool isGroundedRight;
-    private ChechingGround chectingGround;
-    private CharacterController characterController;
 
-    Vector2 sideInputs;
-    Vector3 moveForvard;
-    Vector3 sideMovement;
+    private IChechingGround chectingGround;
+    private CharacterController controller;
+
+    private Vector2 sideInputs;
+    private Vector3 moveForvard;
+    private Vector3 sideMovement;
+    private Vector3 velocity;
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        controller = GetComponent<CharacterController>();
         chectingGround = new ChechingGround();
     }
 
     private void Update()
     {
-        isGroundedLeft = chectingGround.CheckGround(leftRay.transform.position, leftRay.transform.rotation);
-        isGroundedRight = chectingGround.CheckGround(rightRay.transform.position, rightRay.transform.rotation);
-        
+        isGroundedLeft = chectingGround.SideGroundCheck(leftRay.transform.position, leftRay.transform.rotation);
+        isGroundedRight = chectingGround.SideGroundCheck(rightRay.transform.position, rightRay.transform.rotation);
+
+        Gravitation();
     }
 
     private void FixedUpdate()
     {
-        MoveDir();
+        Movement();
     }
 
     public void ReceiveInput(Vector2 sideInput)
@@ -47,16 +53,16 @@ public class PlayerMove : MonoBehaviour
         moveForvard = gameObject.transform.forward * speed;
     }
 
-    private void LeftSliding()
+    private void Sliding()
     {
         if (sideInputs.x < 0 && isGroundedLeft)
         {
-            sideMovement = gameObject.transform.right * sideInputs.x * slidingSmoothness;
+            sideMovement = gameObject.transform.right * sideInputs.x * slidingSpeed;
         }
 
         else if (sideInputs.x > 0 && isGroundedRight)
         {
-            sideMovement = gameObject.transform.right * sideInputs.x * slidingSmoothness;
+            sideMovement = gameObject.transform.right * sideInputs.x * slidingSpeed;
         }
 
         else
@@ -65,11 +71,25 @@ public class PlayerMove : MonoBehaviour
         }    
     }
 
-    public void MoveDir()
+    private void Gravitation()
+    {
+        isGrounded = chectingGround.GroundCheck(gameObject.transform, groundMask);
+
+        if (isGrounded)
+        {
+            velocity.y = 0;
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+
+    }
+
+    private void Movement()
     {
         MoveForvard();
-        LeftSliding();
-        characterController.Move(moveForvard * Time.deltaTime);
-        characterController.Move(sideMovement * Time.deltaTime);
+        Sliding();
+        controller.Move(moveForvard * Time.deltaTime);
+        controller.Move(sideMovement * Time.deltaTime);
     }
 }

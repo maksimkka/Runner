@@ -31,7 +31,6 @@ public class LevelController : MonoBehaviour
         if (currentLevel == maxLevel)
         {
             currentLevel = 1;
-            Debug.Log("Igra proidena go next");
             SceneManager.LoadScene(0);
         }
     }

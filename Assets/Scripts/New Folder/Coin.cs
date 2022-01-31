@@ -1,14 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Coin : MonoBehaviour
+public class Coin : MonoBehaviour, ICoin
 {
     [SerializeField] private int coinCount;
 
-    public int CoinCount()
-    {
-        return coinCount;
-    }
+    public int CoinCount => coinCount;
 }

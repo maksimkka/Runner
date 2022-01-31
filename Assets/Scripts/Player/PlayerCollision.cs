@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerCollision : MonoBehaviour
 {
-    [SerializeField] private GameState gameState;
-
     private IGameOver gameOver;
-
-    //private ChechingPosition chechingPosition;
-
+    private IFinish finish;
     private Score score;
-    //private Finish finish;
 
     private void Awake()
     {
@@ -21,13 +15,9 @@ public class PlayerManager : MonoBehaviour
 
     private void GetObjects()
     {
-        gameOver = gameState.GetComponent<IGameOver>();
-
+        gameOver = FindObjectOfType<GameState>();
+        finish = FindObjectOfType<GameState>();
         score = FindObjectOfType<Score>();
-        //finish = FindObjectOfType<Finish>();
-
-        //chechingPosition = new ChechingPosition();
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,16 +27,15 @@ public class PlayerManager : MonoBehaviour
             gameOver.GameOver();
         }
 
-        if(other.gameObject.TryGetComponent(out Coin coin))
+        if(other.gameObject.TryGetComponent(out ICoin coin))
         {
-            score.IncreaseScore(coin.CoinCount());
+            score.IncreaseScore(coin.CoinCount);
             Destroy(other.gameObject);
         }
 
         if(other.gameObject.CompareTag("Finish"))
         {
-            //finish.StopPlayer(playerRb);
-            gameState.Finished();
+            finish.Finished();
         }
     }
 }
